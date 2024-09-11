@@ -1,6 +1,9 @@
 // Import build consts
 mod vars;
 
+// Import Networking code
+mod rsNetwork;
+
 // Import standard library items.
 use std::io::stdin; 
 use std::process;
@@ -40,7 +43,7 @@ fn menu(){
     match option{
         1 => println!("Feature Missing!"),
         2 => println!("Feature Missing!"),
-        3 => println!("Feature Missing!"),
+        3 => rsNetwork::client::connect(),
         4 => process::exit(0),
         _=> println!("Invalid Option!")
     }
