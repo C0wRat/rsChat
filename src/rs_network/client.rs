@@ -35,9 +35,11 @@ pub fn msg_recv(stream: TcpStream){
     let mut reader = BufReader::new(stream);
     let mut server_buffer = String::new();
     loop{
-        reader.read_line(&mut server_buffer).unwrap();
-        println!("RECV: {}", server_buffer.trim());
-        server_buffer.clear();
-    }
-    
+        while reader.read_line(&mut server_buffer).unwrap() > 0{
+            if server_buffer.trim() != ""{
+                println!("{}", server_buffer.trim());
+            }
+            server_buffer.clear();
+        }
+    }   
 }

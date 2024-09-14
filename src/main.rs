@@ -42,7 +42,7 @@ fn menu(){
 
     match option{
         1 => println!("Feature Missing!"),
-        2 => println!("Feature Missing!"),
+        2 => rs_network::server::host_server(),
         3 => rs_network::client::connect(),
         4 => process::exit(0),
         _=> println!("Invalid Option!")
