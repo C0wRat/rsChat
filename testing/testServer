@@ -1,0 +1,50 @@
+import socket
+
+
+class User:
+    pubkey = ""
+    username = ""
+
+def server_program():
+    # get the hostname
+    host = "127.0.0.1"
+    port = 33777  # initiate port no above 1024
+
+    server_socket = socket.socket()  # get instance
+    # look closely. The bind() function takes tuple as argument
+    server_socket.bind((host, port))  # bind host address and port together
+
+    # configure how many client the server can listen simultaneously
+    server_socket.listen(2)
+    conn, address = server_socket.accept()  # accept new connection
+    
+    print("Connection from: " + str(address))
+    testuser = User()
+
+    # Get the pulic rsa key
+    testuser.pubkey = str(conn.recv(1024).decode()).strip()
+    print("pub key: " + testuser.pubkey)
+    conn.send("key received\n".encode())
+
+    # Get the username
+    testuser.username = str(conn.recv(1024).decode()).strip()
+    print("username: " + testuser.username)
+    conn.send(f"Hello {testuser.username}!\n".encode())
+
+
+    conn.send(f"thread test: 1\n".encode())
+    conn.send(f"thread test: 2\n".encode())
+    conn.send(f"thread test: 3\n".encode())
+
+    while True:
+        recieved_message = conn.recv(1024).decode()
+        f = open("messages.txt", "a")
+        print(f"{testuser.username}: {str(recieved_message).strip()}")
+        f.write(f"{testuser.username}: {str(recieved_message).strip()}\n")
+        f.close()
+
+    conn.close()
+
+
+if __name__ == '__main__':
+    server_program()
