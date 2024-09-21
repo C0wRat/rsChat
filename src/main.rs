@@ -30,8 +30,8 @@ fn menu(){
     let mut input: String = String::new();
     
     println!("1.) Change Username");
-    println!("2.) Host Chat Room");
-    println!("3.) Join Chat Room");
+    println!("2.) Join Chat Room");
+    println!("3.) Host Chat Room");
     println!("4.) Exit rsChat");
 
     // Get User Input.
@@ -42,8 +42,8 @@ fn menu(){
 
     match option{
         1 => println!("Feature Missing!"),
-        2 => rs_network::server::host_server(),
-        3 => rs_network::client::connect(),
+        2 => start_client(),
+        3 => rs_network::server::host_server(),
         4 => process::exit(0),
         _=> println!("Invalid Option!")
     }
@@ -56,4 +56,9 @@ fn main() {
         menu();
         clear();
     }
+}
+
+fn start_client(){
+    rs_network::server::start_web_server();
+    rs_network::client::connect();
 }
