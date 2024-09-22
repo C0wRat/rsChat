@@ -1,12 +1,11 @@
+use std::{thread, time::Duration};
+
 // Import build consts
 mod vars;
 
 // Import Networking code
 mod rs_network;
 
-// Import standard library items.
-use std::io::stdin; 
-use std::process;
 
 // This Function is used to clear the display.
 fn clear(){
@@ -25,34 +24,12 @@ fn logo(){
 ---------------------------------"#, vars::VERSION);
 }
 
-// This finction is used to present a user with the main menu options to navigate the application.
-fn menu(){
-    let mut input: String = String::new();
-    
-    println!("1.) Change Username");
-    println!("2.) Host Chat Room");
-    println!("4.) Exit rsChat");
-
-    // Get User Input.
-    stdin().read_line(&mut input).expect("Bad Input!");
-
-    // Convert User input to an u32.
-    let option: u32 = input.trim().parse().expect("Bad Input!");
-
-    match option{
-        1 => println!("Feature Missing!"),
-        2 => rs_network::server::host_server(),
-        4 => process::exit(0),
-        _=> println!("Invalid Option!")
-    }
-}
-
 fn main() {
     rs_network::server::start_web_server();
-    // TODO: add variable manager to pass into functions
+    clear();
+    logo();
+    println!("Open http://rschat.rat-trap.io to use the app!");
     loop{
-        clear();
-        logo();
-        menu();
+        thread::sleep(Duration::from_secs(100000));
     }
 }

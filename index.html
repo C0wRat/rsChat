@@ -12,12 +12,10 @@ textarea {resize: none;}
 
 <script>
   const xhr = new XMLHttpRequest(); 
-
+  lock = true
   xhr.onreadystatechange = function(evt) {
-    console.log('Request is now in state ' + xhr.readyState);
 
-    if(xhr.readyState === xhr.OPENED) {
-        console.log('Request is opened');
+    if(xhr.readyState === xhr.OPENED && lock == false){
         document.location.href = "chat";
     }
 };
@@ -30,11 +28,29 @@ textarea {resize: none;}
 
     if (ip != "" && username != "")
     {
+      lock = false
       // alert(message);
       xhr.open("POST", "join", true);
       xhr.setRequestHeader("message", ip);
       xhr.setRequestHeader("message", username);
       xhr.send();
+    }
+}
+
+function host_server()
+  {
+    username = document.getElementById("username").value
+    ip = document.getElementById("ip").value
+    console.log(username, ip)
+
+    if (ip != "" && username != "" && lock == true)
+    {
+      // alert(message);
+      xhr.open("POST", "host", true);
+      xhr.setRequestHeader("message", ip);
+      xhr.setRequestHeader("message", username);
+      xhr.send();
+      lock = false
     }
 }
 
@@ -56,7 +72,7 @@ textarea {resize: none;}
 <input type="text" class="messagebox" id="username" name="username" size="50" enctype="text/plain"><br><br>
 <p1><b>Server IP</b></p1><br>
 <input type="text" class="messagebox" id="ip" name="ip" size="50" enctype="text/plain"><br><br>
-<button>Host</button>
+<button onclick="host_server()">Host</button>
 <button onclick="join_server()">Join</button>
 
 <!-- </form> -->
