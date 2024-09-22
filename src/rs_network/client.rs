@@ -1,14 +1,15 @@
-use std::io::{prelude::*, stdin,stdout, Write, BufReader};
+use std::io::{prelude::*, Write, BufReader};
 use std::net::TcpStream;
 use std::thread;
 use std::fs;
 use std::time::Duration;
 
 
-pub fn connect(){
-    let _ = fs::File::create("send.txt");
-    let _ = fs::File::create("recv.txt");
-    if let Ok(mut stream) = TcpStream::connect("127.0.0.1:33777"){
+pub fn connect(ip: String){
+
+    let server_address = format!("{ip}:33777");
+    println!("JOINING: {server_address}");
+    if let Ok(mut stream) = TcpStream::connect(server_address){
         // We have connected to the server
         println!("Connected to server!");
 

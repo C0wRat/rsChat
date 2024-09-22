@@ -4,7 +4,8 @@ use std::io::prelude::*;
 use std::net::TcpStream;
 use std::thread;
 use std::fs;
-use std::time::Duration;
+
+use crate::rs_network::client;
 
 
 
@@ -20,7 +21,7 @@ pub fn host_server(){
 
 pub fn create_server(){
     // println!("[+] Server Thread Started");
-    let listener = TcpListener::bind("127.0.0.1:33777").unwrap();
+    let listener = TcpListener::bind("192.168.1.115:33777").unwrap();
     println!("[+] Server Listening");
     for stream in listener.incoming() {
         let stream = stream.unwrap();
@@ -44,6 +45,7 @@ pub fn session(stream: TcpStream){
 
         let mut username = String::new();
         reader.read_line(&mut username).unwrap();
+        println!("{} connected!",username.trim());
 
         loop{
             reader.read_line(&mut server_buffer).unwrap();
@@ -104,8 +106,9 @@ pub fn start_web_server(){
 }
 
 pub fn web_server(){
-
-    let listener = TcpListener::bind("127.0.0.1:9000").unwrap();
+    let _ = fs::File::create("send.txt");
+    let _ = fs::File::create("recv.txt");
+    let listener = TcpListener::bind("127.0.0.1:80").unwrap();
 
     for stream in listener.incoming() {
         let stream = stream.unwrap();
@@ -126,21 +129,36 @@ fn handle_web_connection(mut stream: TcpStream) {
     // println!("{}", http_request[0]);
     let (status_line, filename) = if http_request[0] == "GET / HTTP/1.1" {
         ("HTTP/1.1 200 OK", "index.html")
-    } else {
+    } else if http_request[0] == "GET /chat HTTP/1.1"{
+        ("HTTP/1.1 200 OK", "chat.html")
+    }else{
         ("HTTP/1.1 200 OK", "recv.txt")
     };
 
-    if http_request[0] == "POST /message HTTP/1.1"{
-        // println!("{}", http_request[2]);
-        let data = http_request[2].to_string() + "\n";
+    if http_request[0] == "POST /join HTTP/1.1"{
+        println!("join: {}", http_request[6]);
+        let data = http_request[6].to_string() + "\n";
         let msg:Vec<_>= data.split("message:").collect();
         let data: String = msg[1].to_string();
-        // let mut data_file = fs::OpenOptions::new()
-        // .append(true)
-        // .open("send.txt")
-        // .expect("cannot open file");
+        let msg:Vec<_>=data.split(",").collect();
+        let ip = msg[0].trim().to_string();
+        let username = msg[1].trim().to_string() + "\n";
+        println!("{username}:{ip}");
+        
+        thread::spawn(|| {
+            client::connect(ip);
+        });
+        
+        let _ = fs::write("send.txt", username);
+    }
+
+    if http_request[0] == "POST /message HTTP/1.1"{
+        println!("{}", http_request[6]);
+        let data = http_request[6].to_string() + "\n";
+        let msg:Vec<_>= data.split("message:").collect();
+        let data: String = msg[1].to_string();
+
         let _ = fs::write("send.txt", data);
-        // let _ = data_file.write(data.as_bytes());
     }
 
     let contents = fs::read_to_string(filename).unwrap();

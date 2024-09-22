@@ -13,34 +13,30 @@ textarea {resize: none;}
 <script>
   const xhr = new XMLHttpRequest(); 
 
-  xhr.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-      chatbox =  document.getElementById("chat")
-      if (chatbox.value != this.responseText){
-        chatbox.value = this.responseText;
-        chatbox.scrollTop = chatbox.scrollHeight;
-      }
+  xhr.onreadystatechange = function(evt) {
+    console.log('Request is now in state ' + xhr.readyState);
+
+    if(xhr.readyState === xhr.OPENED) {
+        console.log('Request is opened');
+        document.location.href = "chat";
     }
-  };
+};
 
-  setInterval(()=>{ 
-      xhr.open("GET","recv.txt",true); 
-      xhr.send(); 
-  },200) 
+  function join_server()
+  {
+    username = document.getElementById("username").value
+    ip = document.getElementById("ip").value
+    console.log(username, ip)
 
-  document.addEventListener('keydown', function(event) {
-    if(event.keyCode == 13) {
-        message = ""
-        message = document.getElementById("message").value
-        document.getElementById("message").value = ""
-        if (message != ""){
-          // alert(message);
-          xhr.open("POST", "message", true);
-          xhr.setRequestHeader("message", message);
-          xhr.send();
-        }
-      }
-  });
+    if (ip != "" && username != "")
+    {
+      // alert(message);
+      xhr.open("POST", "join", true);
+      xhr.setRequestHeader("message", ip);
+      xhr.setRequestHeader("message", username);
+      xhr.send();
+    }
+}
 
 </script>
 
@@ -49,13 +45,20 @@ textarea {resize: none;}
  
 <div>
 <h1>RSchat</h1>
+<p1> Welcome to RSchat a chat client written in rust!</p1>
 
-<textarea id="chat" name="chat" rows="25" cols="150">
+<!-- <textarea id="chat" name="chat" rows="25" cols="150"> -->
 
 </textarea><br><br>
 
 <!-- <form enctype="text/plain"> -->
-<input type="text" class="messagebox" id="message" name="message" size="151" enctype="text/plain"><br><br>
+<p1><b>User Name</b></p1><br>
+<input type="text" class="messagebox" id="username" name="username" size="50" enctype="text/plain"><br><br>
+<p1><b>Server IP</b></p1><br>
+<input type="text" class="messagebox" id="ip" name="ip" size="50" enctype="text/plain"><br><br>
+<button>Host</button>
+<button onclick="join_server()">Join</button>
+
 <!-- </form> -->
 </div>
 </body>
