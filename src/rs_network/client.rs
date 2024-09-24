@@ -23,14 +23,12 @@ pub fn connect(ip: String){
 
         loop{
             thread::sleep(Duration::from_millis(200));
-            let mut data_file = fs::File::open("send.txt").unwrap();
-            // Create an empty mutable string
+            let mut data_file = fs::File::open("C:\\ProgramData\\rsChat\\send.txt").unwrap();
             let mut message_buffer = String::new();
-
-            // Copy contents of file to a mutable string
+            
             data_file.read_to_string(&mut message_buffer).unwrap();
-
-            let _ = fs::write("send.txt", "");
+            
+            let _ = fs::write("C:\\ProgramData\\rsChat\\send.txt", "");
             if message_buffer != ""{
                 stream.write_all(message_buffer.as_bytes()).unwrap();
                 user_buffer.clear();
@@ -60,7 +58,7 @@ pub fn msg_recv(stream: TcpStream){
             reader.read_line(&mut server_buffer).unwrap();
             i+= 1;
         }
-        let _ = fs::write("recv.txt", "");
-        let _ = fs::write("recv.txt", &server_buffer);
+        let _ = fs::write("C:\\ProgramData\\rsChat\\recv.txt", "");
+        let _ = fs::write("C:\\ProgramData\\rsChat\\recv.txt", &server_buffer);
     }
 }

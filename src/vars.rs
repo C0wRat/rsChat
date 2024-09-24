@@ -2,4 +2,4 @@
 //       I want this file to be like #define on c. That might not be possible.
 
 // The VERSION variable is the current rsChat version.
-pub const VERSION:&str = "0.0.9";
+pub const VERSION:&str = "0.1.0";

@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <meta charset='UTF-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+  <title>RSchat Connection</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #E6E6FA; /* Lavender background */
+      height: 100vh;
+      display: flex;
+      justify-content: flex-start; /* Align items to the top */
+      align-items: center;
+      flex-direction: column;
+      padding-top: 50px; /* Adjust how high up the box is */
+    }
+
+    .connect-container {
+      background-color: #fff;
+      width: 100%;
+      max-width: 400px;
+      padding: 40px 30px;
+      border-radius: 15px;
+      box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+
+    .connect-header {
+      font-size: 28px;
+      color: #4B0082; /* Indigo */
+      margin-bottom: 15px;
+      font-weight: bold;
+    }
+
+    .connect-description {
+      font-size: 16px;
+      color: #555;
+      margin-bottom: 25px;
+    }
+
+    .input-label {
+      font-size: 18px;
+      color: #4B0082;
+      margin-bottom: 5px;
+      text-align: left;
+      display: block;
+    }
+
+    .connect-input {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      margin-bottom: 20px;
+      border-radius: 10px;
+      border: 1px solid #9370DB;
+      background-color: #F8F8FF; /* GhostWhite */
+      outline: none;
+    }
+
+    .connect-input:focus {
+      border-color: #9370DB; /* Medium Purple */
+      box-shadow: 0 0 5px rgba(147, 112, 219, 0.5);
+    }
+
+    .btn-container {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+    }
+
+    .connect-btn {
+      background-color: #9370DB;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 18px;
+      transition: background-color 0.3s;
+      width: 45%;
+    }
+
+    .connect-btn:hover {
+      background-color: #836FFF; /* Slate Blue */
+    }
+
+    /* Footer */
+    footer {
+      position: absolute;
+      bottom: 10px;
+      text-align: center;
+      width: 100%;
+      color: #4B0082;
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    /* For smaller screens, make sure it is responsive */
+    @media (max-width: 500px) {
+      .connect-container {
+        padding: 30px 20px;
+      }
+
+      .connect-btn {
+        font-size: 16px;
+        padding: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class='connect-container'>
+  <div class='connect-header'>
+    RSchat
+  </div>
+  <div class='connect-description'>Welcome to RSchat!</div>
+
+  <label class='input-label' for='username'>User Name</label>
+  <input type='text' id='username' class='connect-input' placeholder='Enter your username'>
+
+  <label class='input-label' for='server-ip'>Server IP</label>
+  <input type='text' id='server-ip' class='connect-input' placeholder='127.0.0.1'>
+
+  <div class='btn-container'>
+    <button class='connect-btn' onclick='host_server()'>Host</button>
+    <button class='connect-btn' onclick='join_server()'>Join</button>
+  </div>
+</div>
+
+<footer>
+  <a href='https://rat-trap.io/rschat'>RSchat</a> - Connect with your friends! - <a href='https://github.com/C0wRat'>C0wRat</a> .
+</footer>
+
+<script>
+    const xhr = new XMLHttpRequest(); 
+    lock = true
+    xhr.onreadystatechange = function(evt) {
+  
+      if(xhr.readyState === xhr.OPENED && lock == false){
+          document.location.href = 'chat';
+      }
+  };
+  
+    function join_server()
+    {
+      username = document.getElementById('username').value
+      ip = document.getElementById('server-ip').value
+      console.log(username, ip)
+  
+      if (ip != '' && username != '')
+      {
+        document.cookie = 'username=' + username; 
+        lock = false
+        // alert(message);
+        xhr.open('POST', 'join', true);
+        xhr.setRequestHeader('message', ip);
+        xhr.setRequestHeader('message', username);
+        xhr.send();
+      }
+  }
+  
+  function host_server()
+    {
+      username = document.getElementById('username').value
+      ip = document.getElementById('server-ip').value
+      console.log(username, ip)
+  
+      if (ip != '' && username != '' && lock == true)
+      {
+        // alert(message);
+        xhr.open('POST', 'host', true);
+        xhr.setRequestHeader('message', ip);
+        xhr.setRequestHeader('message', username);
+        xhr.send();
+        lock = false
+      }
+  }
+  
+  </script>
+</body>
+
+</html>

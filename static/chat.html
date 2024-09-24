@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <meta charset='UTF-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+  
+
+
+  
+  <title>RSchat</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #E6E6FA; /* Lavender background */
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .chat-container {
+      width: 90%;
+      height: 80%;
+      background-color: #FFFFFF;
+      border-radius: 15px;
+      box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .chat-header {
+      background-color: #9370DB; /* Medium Purple */
+      color: white;
+      padding: 15px;
+      font-size: 24px;
+      text-align: center;
+      font-weight: bold;
+      box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .chat-box {
+      flex-grow: 1;
+      padding: 15px;
+      background-color: #F8F8FF; /* GhostWhite for a softer look */
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      border-bottom: 1px solid #ccc;
+    }
+
+    .message {
+      margin-bottom: 10px;
+      padding: 10px 15px;
+      border-radius: 20px;
+      max-width: 75%;
+      word-wrap: break-word;
+      font-size: 16px;
+    }
+
+    .server-message {
+      background-color: #DCDCDC; /* Gainsboro */
+      color: #555;
+      text-align: center;
+    }
+
+    .user-message {
+      background-color: #DDA0DD; /* Plum */
+      color: #000;
+      align-self: flex-start;
+    }
+
+    .self-message {
+      background-color: #9370DB; /* Medium Purple */
+      color: white;
+      align-self: flex-end;
+    }
+
+    .chat-input-container {
+      padding: 10px;
+      background-color: #EEE9E9; /* LavenderBlush */
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .chat-input {
+      flex-grow: 1;
+      padding: 15px;
+      border: 1px solid #ccc;
+      border-radius: 25px;
+      font-size: 18px;
+      outline: none;
+    }
+
+    .chat-input:focus {
+      border-color: #9370DB; /* Medium Purple */
+    }
+
+    .send-btn {
+      background-color: #9370DB;
+      color: white;
+      border: none;
+      padding: 15px 20px;
+      margin-left: 10px;
+      border-radius: 25px;
+      cursor: pointer;
+      font-size: 18px;
+    }
+
+    .send-btn:hover {
+      background-color: #836FFF; /* Slate Blue */
+    }
+
+    .chat-box::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .chat-box::-webkit-scrollbar-thumb {
+      background-color: #9370DB;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<div class='chat-container'>
+  <div class='chat-header'>RSchat</div>
+  
+  <div class='chat-box' id='chatBox'>
+    <!-- Example Messages -->
+    <!-- <div id='srv' class='message server-message'></div> -->
+    <!-- <div id='rcv' class='message user-message'></div> -->
+    <!-- <div id='usr' class='message self-message'></div> -->
+
+  </div>
+
+  <div class='chat-input-container'>
+    <input type='text' class='chat-input' id='message' placeholder='Type your message...'>
+    <button class='send-btn' onclick='send_msg()'>Send</button>
+  </div>
+</div>
+
+<script>
+  const xhr = new XMLHttpRequest(); 
+  username = document.cookie.split('=')[1]
+  chat_history=''
+  chatbox =  document.getElementById('chatBox')
+
+  xhr.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      if (chat_history != this.responseText){
+        chat_history = this.responseText
+        chatbox.innerHTML = ''
+        messages = this.response.split('\n')
+        messages.forEach(element => {
+          if(element != ''){
+            if(element.split(':')[0].includes(username)){
+              var div = document.createElement('div')
+              div.className = 'message self-message'
+              div.innerHTML = element
+              chatbox.appendChild(div);
+            }
+            else if(element.split(':')[0].includes('SERVER')){
+              var div = document.createElement('div')
+              div.className = 'message server-message'
+              div.innerHTML = element
+              chatbox.appendChild(div);
+            }else{
+              var div = document.createElement('div')
+              div.className = 'message user-message'
+              div.innerHTML = element
+              chatbox.appendChild(div);
+            }
+          }
+        });
+        
+        
+        // chatbox.value = this.responseText;
+        // chatbox.scrollTop = chatbox.scrollHeight;
+      }
+    }
+  };
+
+  setInterval(()=>{ 
+      xhr.open('GET','recv.txt',true); 
+      xhr.send(); 
+  },200) 
+
+  document.addEventListener('keydown', function(event) {
+    if(event.keyCode == 13) {
+        message = ''
+        message = document.getElementById('message').value
+        console.log(message)
+        document.getElementById('message').value = ''
+        if (message != ''){
+          // alert(message);
+          xhr.open('POST', 'message', true);
+          xhr.setRequestHeader('message', message);
+          xhr.send(message);
+        }
+      }
+  });
+
+  function send_msg(){
+    message = ''
+    message = document.getElementById('message').value
+    console.log(message)
+    document.getElementById('message').value = ''
+    if (message != ''){
+      xhr.open('POST', 'message', true);
+      xhr.setRequestHeader('message', message);
+      xhr.send();
+    }
+  }
+
+</script>
+
+
+
+</body>
+</html>
