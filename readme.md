@@ -10,7 +10,7 @@
 
 
 <p align="center">
-  <img src="/imgs/RSchat.png" alt="rsChat Logo" width="200" />
+  <img src="/imgs/RSchat.png" alt="rsChat Logo" width="2000" />
 </p>
 
 
